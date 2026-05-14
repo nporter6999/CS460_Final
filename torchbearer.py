@@ -192,7 +192,7 @@ Why Greedy Fails
 - The failure mode: Greedy fails because it always chooses the next relic with the lowest cost, but that choice can lead to a worse complete path
 - Counter-example setup: 
 
-| From \ To | A   | B   | C   | T   |
+| From \\ To | A   | B   | C   | T   |
 | --------- | --- | --- | --- | --- |
 | S         | 1   | 100 | 2   | --  |
 | A         | --  | 100 | 100 | 1   |
@@ -234,7 +234,15 @@ def find_optimal_route(dist_table, spawn, relics, exit_node):
 
     TODO
     """
-    pass
+    current_loc = spawn
+    relics_remaining = relics
+    cost_so_far = 0
+    relics_visited_order = []
+    best = []
+    best.append(float('inf'))
+    best.append([])
+    _explore(dist_table, current_loc, relics_remaining, relics_visited_order, cost_so_far, exit_node, best)
+    return (best[0], best[1])
 
 
 def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
@@ -266,7 +274,20 @@ def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
     explaining why it is safe (cannot skip the optimal solution).
     This comment is graded.
     """
-    pass
+
+    if (len(relics_remaining) == 0 and dist_table[current_loc][exit_node] + cost_so_far < best[0]):
+        best[0] = dist_table[current_loc][exit_node] + cost_so_far
+        best[1] = relics_visited_order.copy()
+
+    for node, cost in dist_table[current_loc].items():
+        if (node in relics_remaining and cost + cost_so_far < best[0]):
+            new_cost = cost + cost_so_far
+            relics_remaining.remove(node)
+            relics_visited_order.append(node)
+            _explore(dist_table, node, relics_remaining, relics_visited_order, new_cost, exit_node, best)
+
+            relics_visited_order.pop()
+            relics_remaining.append(node)
 
 
 # =============================================================================
@@ -290,7 +311,9 @@ def solve(graph, spawn, relics, exit_node):
 
     TODO
     """
-    pass
+    dist_table = precompute_distances(graph, spawn, relics, exit_node)
+    return find_optimal_route(dist_table, spawn, relics, exit_node)
+
 
 
 # =============================================================================
@@ -356,84 +379,5 @@ def _run_tests():
 
     print("\nAll provided tests passed.")
 
-
-def _run_unit_tests():
-    print("Running Unit tests...")
-
-    # Test 1: select_sources should include S and relics, but not T.
-    sources = select_sources('S', ['A', 'B'], 'T')
-
-    if 'S' in sources and 'A' in sources and 'B' in sources and 'T' not in sources:
-        print("Test 1 passed")
-    else:
-        print("Test 1 failed")
-        print("sources =", sources)
-
-    # Test 2: select_sources should not add duplicates.
-    sources = select_sources('S', ['A', 'S', 'A'], 'T')
-
-    if len(sources) == 2:
-        print("Test 2 passed")
-    else:
-        print("Test 2 failed")
-        print("sources =", sources)
-
-    # Test 3: Dijkstra should find the cheaper path through A.
-    graph = {
-        'S': [('A', 1), ('B', 5)],
-        'A': [('B', 2)],
-        'B': []
-    }
-
-    dist = run_dijkstra(graph, 'S')
-
-    if dist['S'] == 0 and dist['A'] == 1 and dist['B'] == 3:
-        print("Test 3 passed")
-    else:
-        print("Test 3 failed")
-        print("dist =", dist)
-
-    # Test 4: unreachable nodes should stay infinity.
-    graph = {
-        'S': [('A', 2)],
-        'A': [],
-        'B': []
-    }
-
-    dist = run_dijkstra(graph, 'S')
-
-    if dist['B'] == float('inf'):
-        print("Test 4 passed")
-    else:
-        print("Test 4 failed")
-        print("dist =", dist)
-
-    # Test 5: precompute_distances should make a table for S and each relic.
-    graph = {
-        'S': [('A', 1)],
-        'A': [('B', 2)],
-        'B': [('T', 3)],
-        'T': []
-    }
-
-    dist_table = precompute_distances(graph, 'S', ['A', 'B'], 'T')
-
-    if 'S' in dist_table and 'A' in dist_table and 'B' in dist_table and 'T' not in dist_table:
-        print("Test 5 passed")
-    else:
-        print("Test 5 failed")
-        print("dist_table =", dist_table)
-
-    # Test 6: precompute_distances should store correct shortest path values.
-    if dist_table['S']['T'] == 6 and dist_table['A']['T'] == 5 and dist_table['B']['T'] == 3:
-        print("Test 6 passed")
-    else:
-        print("Test 6 failed")
-        print("dist_table =", dist_table)
-
 if __name__ == "__main__":
-    #_run_tests()
-    _run_unit_tests()
-    print(explain_problem())
-    print(dijkstra_invariant_check())
-    print(explain_search())
+    _run_tests()

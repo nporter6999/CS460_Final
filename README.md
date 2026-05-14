@@ -4,11 +4,6 @@
 **Student ID:** 121284225
 **Course:** CS 460 – Algorithms | Spring 2026
 
-> This README is your project documentation. Write it the way a developer would document
-> their design decisions , bullet points, brief justifications, and concrete examples where
-> required. You are not writing an essay. You are explaining what you built and why you built
-> it that way. Delete all blockquotes like this one before submitting.
-
 ---
 
 ## Part 1: Problem Analysis
@@ -110,33 +105,26 @@ The route planner needs the shortest path to each relic so that it can compare t
 
 ### Part 5a: State Representation
 
-> Document the three components of your search state as a table.
-> Variable names here must match exactly what you use in torchbearer.py.
-
-| Component | Variable name in code | Data type | Description |
-|---|---|---|---|
-| Current location | | | |
-| Relics already collected | | | |
-| Fuel cost so far | | | |
+| Component                | Variable name in code | Data type | Description                                                                                    |
+| ------------------------ | --------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| Current location         | current_loc           | node      | The node the search is exploring from                                                          |
+| Relics already collected | relics_visited_order  | list      | Stores the relics that have been collected in the order they were collected                    |
+| Fuel cost so far         | cost_so_far           | float     | The fuel cost to go from the spawn through the relics collected so far to the current location |
 
 ### Part 5b: Data Structure for Visited Relics
 
-> Fill in the table.
-
-| Property | Your answer |
-|---|---|
-| Data structure chosen | |
-| Operation: check if relic already collected | Time complexity: |
-| Operation: mark a relic as collected | Time complexity: |
-| Operation: unmark a relic (backtrack) | Time complexity: |
-| Why this structure fits | |
+| Property                                    | Your answer                                                                          |
+| ------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Data structure chosen                       | list                                                                                 |
+| Operation: check if relic already collected | Time complexity: O(n)                                                                |
+| Operation: mark a relic as collected        | Time complexity: O(n)                                                                |
+| Operation: unmark a relic (backtrack)       | Time complexity: O(1)                                                                |
+| Why this structure fits                     | It's simple a only needs to keep track of the relics that still need to be collected |
 
 ### Part 5c: Worst-Case Search Space
 
-> Two bullets.
-
-- **Worst-case number of orders considered:** _Your answer (in terms of k)._
-- **Why:** _One-line justification._
+- **Worst-case number of orders considered:** k!
+- **Why:** Worst-case none of the branches get pruned and the algorithm has to check every possible order of relics
 
 ---
 
@@ -144,31 +132,23 @@ The route planner needs the shortest path to each relic so that it can compare t
 
 ### Part 6a: Best-So-Far Tracking
 
-> Three bullets.
-
-- **What is tracked:** _Your answer here._
-- **When it is used:** _Your answer here._
-- **What it allows the algorithm to skip:** _Your answer here._
+- **What is tracked:** The cost and the order for the best route found so far
+- **When it is used:** It is used to check if the current path being explored is already a higher cost than the current best cost found 
+- **What it allows the algorithm to skip:** Since all edges are nonnegative, as a path gets longer the cost will always go up so if the current path cost is already greater than the best cost the current path will never be better
 
 ### Part 6b: Lower Bound Estimation
 
-> Three bullets.
-
-- **What information is available at the current state:** _Your answer here._
-- **What the lower bound accounts for:** _Your answer here._
-- **Why it never overestimates:** _Your answer here._
+- **What information is available at the current state:** current location, the relics that still need to be collected, the cost of the path so far, and the best completed path
+- **What the lower bound accounts for:** the cost of the path so far plus the cost to move to the next relic
+- **Why it never overestimates:** It never overestimates because it only uses the cost so far and the cost to the next relic which will always be less than that path's complete cost
 
 ### Part 6c: Pruning Correctness
 
-> One to two bullets. Explain why pruning is safe.
-
-- _Your answer here._
+- Pruning is safe because if the current path's cost so far plus the cost to the next node is already greater than the best cost, adding more paths will not reduce the cost of the current path
 
 ---
 
 ## References
-
-> Bullet list. If none beyond lecture notes, write that.
 
 - https://pythonguides.com/priority-queue-in-python/
 - https://www.geeksforgeeks.org/python/python-infinity/
