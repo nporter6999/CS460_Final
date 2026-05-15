@@ -32,7 +32,7 @@ def explain_problem():
         Your Part 1 README answers, written as a string.
         Must match what you wrote in README Part 1.
 
-    TODO
+    
     """
     return """
 - Why a single shortest-path run from S is not enough:
@@ -62,7 +62,7 @@ def select_sources(spawn, relics, exit_node):
     list[node]
         No duplicates. Order does not matter.
 
-    TODO
+    
     """
     sources = []
     sources.append(spawn)
@@ -86,7 +86,7 @@ def run_dijkstra(graph, source):
         Minimum cost from source to every node in graph.
         Unreachable nodes map to float('inf').
 
-    TODO
+    
     """
     dist = {}
     for node in graph:
@@ -126,7 +126,7 @@ def precompute_distances(graph, spawn, relics, exit_node):
         Nested structure supporting dist_table[u][v] lookups
         for every source u your design requires.
 
-    TODO
+    
     """
     dist_table = {}
     
@@ -150,14 +150,14 @@ def dijkstra_invariant_check():
         Your Part 3 README answers, written as a string.
         Must match what you wrote in README Part 3.
 
-    TODO
+    
     """
     return """
 - For nodes already finalized (in S):
-  There are no shorter paths possible from S to that node 
+  There are no shorter paths possible from the source to that node 
 
 - For nodes not yet finalized (not in S):
-  The distance stored is the shortest path currently found from the S to that node
+  The distance stored is the shortest path currently found from the source to that node
 
 - Initialization : why the invariant holds before iteration 1:
   S starts with a distance of 0, and all other nodes start with a distance of inf
@@ -185,7 +185,7 @@ def explain_search():
         Your Part 4 README answers, written as a string.
         Must match what you wrote in README Part 4.
 
-    TODO
+    
     """
     return """
 Why Greedy Fails
@@ -232,7 +232,7 @@ def find_optimal_route(dist_table, spawn, relics, exit_node):
         (minimum_fuel_cost, ordered_relic_list)
         Returns (float('inf'), []) if no valid route exists.
 
-    TODO
+    
     """
     current_loc = spawn
     relics_remaining = relics
@@ -267,7 +267,7 @@ def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
     None
         Updates best in place.
 
-    TODO
+    
     Implement: base case, pruning, recursive case, backtracking.
 
     REQUIRED: Add a 1-2 sentence comment near your pruning condition
@@ -280,6 +280,8 @@ def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
         best[1] = relics_visited_order.copy()
 
     for node, cost in dist_table[current_loc].items():
+        # Pruning is safe because if the current path's cost so far plus the cost to the next node is already greater
+        # than the best cost, adding more paths will not reduce the cost of the current path
         if (node in relics_remaining and cost + cost_so_far < best[0]):
             new_cost = cost + cost_so_far
             relics_remaining.remove(node)
@@ -309,7 +311,6 @@ def solve(graph, spawn, relics, exit_node):
         (minimum_fuel_cost, ordered_relic_list)
         Returns (float('inf'), []) if no valid route exists.
 
-    TODO
     """
     dist_table = precompute_distances(graph, spawn, relics, exit_node)
     return find_optimal_route(dist_table, spawn, relics, exit_node)
